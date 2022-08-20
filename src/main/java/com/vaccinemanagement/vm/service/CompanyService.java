@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CompanyService {
@@ -23,16 +24,12 @@ public class CompanyService {
 
     public Company getCompany(String name) {
         List<Company> companies = companyRepository.findByCompanyName(name);
-        if (!companies.isEmpty())
-            return companies.get(0);
+        if (!companies.isEmpty()) return companies.get(0);
         return null;
     }
 
-    public Company getCompany(int id) {
-        return companyRepository.findById(id).get();
-    }
 
-    public Company searchCompanyById(int id) {
-        return companyRepository.findById(id).get();
+    public Optional<Company> searchCompanyById(int id) {
+        return companyRepository.findById(id);
     }
 }

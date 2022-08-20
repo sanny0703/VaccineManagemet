@@ -9,16 +9,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
-import java.sql.Time;
+import java.util.Optional;
 
 @Service
 public class DailyReportService {
 
-    private final String REPORT_SUCCESS = "Successfully vaccinated";
-    private final String REPORT_FAIL = "Vaccination was incomplete";
+    private static final String REPORT_SUCCESS = "Successfully vaccinated";
+    private static final String REPORT_FAIL = "Vaccination was incomplete";
+
     @Autowired
     private DailyReportRepository dailyReportRepository;
     @Autowired
@@ -28,15 +27,19 @@ public class DailyReportService {
     @Autowired
     private CompanyService companyService;
 
+
     public DailyReport addReport(DailyReport report, int userId, int vaccineId, int companyId) {
-        User user = userService.searchUserById(userId);
-        Vaccine vaccine = vaccineService.searchVaccineById(vaccineId);
-        Company company = companyService.searchCompanyById(companyId);
-        report.setUser(user);
-        report.setVaccine(vaccine);
-        report.setCompany(company);
-        buildReport(report, vaccine);
+        Optional<User> user = userService.searchUserById(userId);
+        Optional<Vaccine> vaccine = vaccineService.searchVaccineById(vaccineId);
+        Optional<Company> company = companyService.searchCompanyById(companyId);
+        if (user.isPresent() && vaccine.isPresent() && company.isPresent()) {
+            report.setUser(user.get());
+            report.setVaccine(vaccine.get());
+            report.setCompany(company.get());
+        }
+        buildReport(report);
         return dailyReportRepository.save(report);
+
     }
 
     public List<DailyReport> getReports() {
@@ -44,16 +47,17 @@ public class DailyReportService {
 
     }
 
-    private void buildReport(DailyReport dailyReport, Vaccine vaccine) {
+    private void buildReport(DailyReport dailyReport) {
 
-        String disc = "Name: " + vaccine.getPatientName() +
-                "Age: " + vaccine.getPatientAge() +
-                "Gender: " + vaccine.getPatientGender() +
-                "vaccine: " + dailyReport.getVaccineName();
+        Vaccine vaccine = dailyReport.getVaccine();
+        String disc = "Name: " + vaccine.getPatientName() + ";Age: " + vaccine.getPatientAge() + ";Gender: " + vaccine.getPatientGender() + ";vaccine: " + dailyReport.getVaccineName();
         dailyReport.setReportDescription(disc);
-        if (dailyReport.getReportStatus().equals("C"))
-            dailyReport.setReportStatus(REPORT_SUCCESS);
+        if (dailyReport.getReportStatus().equals("C")) dailyReport.setReportStatus(REPORT_SUCCESS);
         else dailyReport.setReportStatus(REPORT_FAIL);
+    }
+
+    public Optional<DailyReport> searchById(int id) {
+        return dailyReportRepository.findById(id);
     }
 
     public List<DailyReport> searchByVaccineName(String vaccineName) {

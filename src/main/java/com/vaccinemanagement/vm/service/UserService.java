@@ -1,11 +1,15 @@
 package com.vaccinemanagement.vm.service;
 
+import com.vaccinemanagement.vm.exception.UserNotFoundException;
 import com.vaccinemanagement.vm.model.User;
 import com.vaccinemanagement.vm.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -13,6 +17,9 @@ public class UserService {
     private UserRepository userRepository;
 
     public User addUser(User user) {
+        String rawPassword = user.getPassword();
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        user.setUserPassword(passwordEncoder.encode(rawPassword));
         return userRepository.save(user);
     }
 
@@ -20,22 +27,23 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User searchUser(String email) {
+    public Optional<User> searchUser(String email) {
 
-        List<User> users = userRepository.findByUserEmail(email);
-        if (users.size() != 0)
-            return users.get(0);
-        return null;
+        return userRepository.findByUserEmail(email);
     }
 
-    public User searchUserById(int id) {
-        return userRepository.findById(id).get();
+    public Optional<User> searchUserById(int id) {
+
+        return userRepository.findById(id);
     }
 
-    public User deleteUser(int id) {
-        User user = searchUserById(id);
-        userRepository.deleteById(id);
-        return user;
+    public void deleteUser(int id) {
+        Optional<User> user = searchUserById(id);
+        if (user.isPresent()) {
+            userRepository.deleteById(id);
+        } else {
+            throw new UserNotFoundException("User with user id: " + id + " is not found");
+        }
     }
 
     public List<User> searchUsersByName(String name) {
