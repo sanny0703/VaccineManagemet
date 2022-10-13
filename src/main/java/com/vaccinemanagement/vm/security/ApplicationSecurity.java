@@ -52,7 +52,8 @@ public class ApplicationSecurity {
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
         http.cors().configurationSource(request -> {
             CorsConfiguration configuration = new CorsConfiguration();
-            configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200", "http://127.0.0.1:80", "http://example.com"));
+            configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200", "http://127.0.0.1:80", "http" +
+                    "://example.com","*"));
             configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
             configuration.setAllowedHeaders(Collections.singletonList("*"));
             return configuration;
