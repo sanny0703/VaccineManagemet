@@ -1,5 +1,6 @@
 package com.vaccinemanagement.vm.controller;
 
+import com.vaccinemanagement.vm.exception.CompanyNotFoundException;
 import com.vaccinemanagement.vm.model.Company;
 import com.vaccinemanagement.vm.service.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,5 +39,15 @@ public class CompanyController {
     @GetMapping("/{name}")
     public Company getCompany(@PathVariable("name") String name) {
         return companyService.getCompany(name);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteCompany(@PathVariable("id") int id) {
+        try {
+            companyService.delete(id);
+            return ResponseEntity.ok("Company successfully deleted");
+        } catch (CompanyNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

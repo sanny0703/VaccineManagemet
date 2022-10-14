@@ -1,5 +1,6 @@
 package com.vaccinemanagement.vm.service;
 
+import com.vaccinemanagement.vm.exception.VaccineCompanyNotFoundException;
 import com.vaccinemanagement.vm.model.Company;
 import com.vaccinemanagement.vm.model.VaccineCompany;
 import com.vaccinemanagement.vm.repository.VaccineCompanyRepository;
@@ -17,9 +18,7 @@ public class VaccineCompanyService {
     @Autowired
     private CompanyService companyService;
 
-    public VaccineCompany addVaccine(VaccineCompany vaccineCompany, int companyId) {
-        Optional<Company> company = companyService.searchCompanyById(companyId);
-        company.ifPresent(vaccineCompany::setCompany);
+    public VaccineCompany addVaccine(VaccineCompany vaccineCompany) {
         return vaccineCompanyRepository.save(vaccineCompany);
     }
 
@@ -37,5 +36,11 @@ public class VaccineCompanyService {
 
     public Optional<VaccineCompany> searchVaccineCompanyById(int id) {
         return vaccineCompanyRepository.findById(id);
+    }
+
+    public void deleteVaccineCompany(int id) throws VaccineCompanyNotFoundException {
+        Optional<VaccineCompany> vaccineCompany = vaccineCompanyRepository.findById(id);
+        if (vaccineCompany.isPresent()) vaccineCompanyRepository.deleteById(id);
+        else throw new VaccineCompanyNotFoundException("Vaccine Company with id " + id + "doesn't exist");
     }
 }

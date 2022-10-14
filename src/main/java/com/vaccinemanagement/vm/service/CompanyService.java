@@ -1,5 +1,6 @@
 package com.vaccinemanagement.vm.service;
 
+import com.vaccinemanagement.vm.exception.CompanyNotFoundException;
 import com.vaccinemanagement.vm.model.Company;
 import com.vaccinemanagement.vm.repository.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +29,14 @@ public class CompanyService {
         return null;
     }
 
-
     public Optional<Company> searchCompanyById(int id) {
         return companyRepository.findById(id);
+    }
+
+    public void delete(int id){
+        Optional<Company> company = companyRepository.findById(id);
+        if(company.isPresent())
+            companyRepository.deleteById(id);
+        else throw  new CompanyNotFoundException("Company with id "+id+" is not found");
     }
 }
