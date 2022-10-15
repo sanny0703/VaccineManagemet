@@ -26,8 +26,7 @@ public class VaccineCompanyController {
 
     @GetMapping()
     public List<VaccineCompany> getAllVaccines() {
-        List<VaccineCompany> allVaccines = vaccineCompanyService.getAllVaccines();
-        return allVaccines;
+        return vaccineCompanyService.getAllVaccines();
     }
 
     @GetMapping("/searchById/{id}")
