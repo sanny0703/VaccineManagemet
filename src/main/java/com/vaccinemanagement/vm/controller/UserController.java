@@ -14,6 +14,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/user")
 @Validated
+@SuppressWarnings("unused")
 public class UserController {
 
     @Autowired
@@ -28,7 +29,6 @@ public class UserController {
     @GetMapping("/{userId}")
     public ResponseEntity<?> getUser(@PathVariable("userId") int id) {
         Optional<User> user = userService.searchUserById(id);
-        System.out.println(user.get());
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 

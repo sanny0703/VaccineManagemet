@@ -13,6 +13,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/report")
+@SuppressWarnings("unused")
 public class DailyReportController {
 
     @Autowired

@@ -7,39 +7,37 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/vaccine_company")
+@SuppressWarnings("unused")
 public class VaccineCompanyController {
 
     @Autowired
     private VaccineCompanyService vaccineCompanyService;
-    private List<VaccineCompany> allVaccines;
 
     @PostMapping()
     public ResponseEntity<VaccineCompany> addVaccineCompany(@RequestBody VaccineCompany vaccineCompany) {
         VaccineCompany savedCompany = vaccineCompanyService.addVaccine(vaccineCompany);
-        URI uri = URI.create("/vaccine_company/" + savedCompany.getVaccineCompanyId());
-        return ResponseEntity.created(uri).body(savedCompany);
+        return ResponseEntity.ok(savedCompany);
     }
 
-    @GetMapping
+    @GetMapping()
     public List<VaccineCompany> getAllVaccines() {
+        List<VaccineCompany> allVaccines = vaccineCompanyService.getAllVaccines();
         return allVaccines;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/searchById/{id}")
     public ResponseEntity<VaccineCompany> getVaccine(@PathVariable("id") int vaccineCompanyId) {
         Optional<VaccineCompany> vaccineCompany = vaccineCompanyService.searchVaccineCompanyById(vaccineCompanyId);
         return vaccineCompany.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/{name}")
+    @GetMapping("/searchByName/{name}")
     public List<VaccineCompany> searchVaccineAndCompany(@PathVariable("name") String name) {
-        System.out.println(name);
         return vaccineCompanyService.searchVaccines(name);
     }
 

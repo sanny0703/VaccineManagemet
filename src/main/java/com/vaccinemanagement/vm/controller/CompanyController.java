@@ -13,6 +13,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/company")
+@SuppressWarnings("unused")
 public class CompanyController {
 
     @Autowired

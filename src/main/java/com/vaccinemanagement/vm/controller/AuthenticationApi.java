@@ -17,6 +17,7 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("/auth")
+@SuppressWarnings("unused")
 public class AuthenticationApi {
     @Autowired
     private UserService userService;

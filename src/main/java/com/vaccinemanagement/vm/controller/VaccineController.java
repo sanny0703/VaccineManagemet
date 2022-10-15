@@ -12,6 +12,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/vaccine")
+@SuppressWarnings("unused")
 public class VaccineController {
 
 
