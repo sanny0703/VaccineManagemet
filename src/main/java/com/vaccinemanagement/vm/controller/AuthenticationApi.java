@@ -1,8 +1,10 @@
 package com.vaccinemanagement.vm.controller;
 
-import com.vaccinemanagement.vm.model.*;
-import com.vaccinemanagement.vm.service.UserService;
 import com.vaccinemanagement.vm.jwt.JwtTokenUtil;
+import com.vaccinemanagement.vm.model.AuthenticationRequest;
+import com.vaccinemanagement.vm.model.AuthenticationResponse;
+import com.vaccinemanagement.vm.model.User;
+import com.vaccinemanagement.vm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,10 +12,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.net.URI;
 
 @RestController
 @RequestMapping("/auth")
@@ -41,10 +45,23 @@ public class AuthenticationApi {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<User> addUser(@RequestBody User user) {
-        User savedUser = userService.addUser(user);
-        URI uri = URI.create("/user/" + savedUser.getUserId());
-        return ResponseEntity.created(uri).body(savedUser);
+    public ResponseEntity<?> addUser(@RequestBody User user) {
+        try{
+            userService.addUser(user);
+            return ResponseEntity.ok("User Added");
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().build();
+        }
 
+    }
+
+    @PostMapping("/admin")
+    public ResponseEntity<?> addAdmin(@RequestBody User user) {
+        if (!user.getIsAdmin().equals("S@nny0703"))
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        user.setIsAdmin("Y");
+        userService.addUser(user);
+        return ResponseEntity.ok("Admin added");
     }
 }

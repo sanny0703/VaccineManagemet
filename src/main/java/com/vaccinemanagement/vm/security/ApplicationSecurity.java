@@ -46,7 +46,9 @@ public class ApplicationSecurity {
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.exceptionHandling().authenticationEntryPoint(((request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage())));
-        http.authorizeRequests().antMatchers("/auth/login", "/auth/signup").permitAll() // for auth no authentication is required
+        http.authorizeRequests().antMatchers("/auth/login","/auth/signup","/auth/admin").permitAll() // for
+                // auth no
+                // authentication is required
                 .anyRequest() // for all other requests authentication is required
                 .authenticated();
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
