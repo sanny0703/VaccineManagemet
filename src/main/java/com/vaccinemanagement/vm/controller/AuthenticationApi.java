@@ -6,6 +6,7 @@ import com.vaccinemanagement.vm.model.AuthenticationResponse;
 import com.vaccinemanagement.vm.model.User;
 import com.vaccinemanagement.vm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -48,12 +49,11 @@ public class AuthenticationApi {
     public ResponseEntity<?> addUser(@RequestBody User user) {
         try{
             userService.addUser(user);
-            return ResponseEntity.ok("User Added");
+            return ResponseEntity.ok("user added");
         }
-        catch (Exception e){
+        catch (DataIntegrityViolationException e){
             return ResponseEntity.badRequest().build();
         }
-
     }
 
     @PostMapping("/admin")
