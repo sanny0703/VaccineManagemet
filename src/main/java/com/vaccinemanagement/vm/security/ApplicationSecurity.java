@@ -51,11 +51,12 @@ public class ApplicationSecurity {
                 // authentication is required
                 .anyRequest() // for all other requests authentication is required
                 .authenticated();
+        //add our jwt token filter before the UserNameAndPasswordAuthenticationFilter, so that we can pass our own 
+        // configure details for spring security to check and validate user
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
         http.cors().configurationSource(request -> {
             CorsConfiguration configuration = new CorsConfiguration();
-            configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200", "http://127.0.0.1:80", "http" +
-                    "://example.com","*"));
+            configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200", "http://127.0.0.1:80","*"));
             configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
             configuration.setAllowedHeaders(Collections.singletonList("*"));
             return configuration;
