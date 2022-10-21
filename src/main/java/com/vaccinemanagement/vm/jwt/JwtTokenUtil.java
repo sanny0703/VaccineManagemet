@@ -14,7 +14,7 @@ import java.util.Map;
 @Component
 public class JwtTokenUtil {
 
-    private final long EXPIRATION_TIME = 24 * 60 * 60 *1000; // 24 hrs
+    private static final long EXPIRATION_TIME = 24 * 60 * 60 *1000; // 24 hrs
     @Value("${app.jwt.secretKey}")
     private  String SECRET_KEY ;
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtTokenUtil.class);
