@@ -39,6 +39,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private void setAuthenticationContext(String accessToken, HttpServletRequest request) {
         UserDetails userDetails = getUserDetails(accessToken);
+        // setting the user details for spring security to configure the user
+        // here we are defining our own configure method for every request, the user makes
         UsernamePasswordAuthenticationToken authentication =
                 new UsernamePasswordAuthenticationToken(userDetails,null,null);
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
